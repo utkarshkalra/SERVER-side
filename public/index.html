@@ -4,51 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"
+        integrity="sha512-b/htz6gIyFi3dwSoZ0Uv3cuv3Ony7EeKkacgrcVg8CMzu90n777qveu0PBcbZUA7TzyENGtU+qZRuFAkfqgyoQ=="
+        crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
 
 <body>
-    <h1>Data Selfie</h1>
+    <h1>Data Selfie App</h1>
+    <a href="/">Enter</a>
+    <span>&nbsp;|&nbsp;</span>
+    <a href="all.html">list</a>
+    <br>
     <p>Latitude: <span id="latitude"></span>&deg;</p>
     <p>Longitude: <span id="longitude"></span>&deg;</p>
     <input type="text" id="mood" placeholder="enter your mood" value="">
     <button id="btn">Submit</button>
+    
 
     <script>
-        
-        document.getElementById('btn').addEventListener("click",event =>{
+        var image64;
 
-        if ('geolocation' in navigator) {
-            console.log('geolocation available')
+        function setup() {
 
-            navigator.geolocation.getCurrentPosition(async (position) => {
+            noCanvas();
+            const video = createCapture(VIDEO);
+            video.size(320, 240);
+            video.loadPixels();
+            image64 = video.canvas.toDataURL();
+            console.log(image64)
+            console.log("ye to challa")
 
-                const lat = position.coords.latitude;
-                const long = position.coords.longitude;
-                const mood=document.getElementById('mood').value;
-                document.getElementById('mood').value="";
-                document.getElementById('longitude').textContent = long;
-                document.getElementById('latitude').textContent = lat;
-
-                const data = {lat, long ,mood};
-                const options={
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(data)
-
-                }
-
-                const response = await fetch('/api',options);
-                const blob = await response.json();
-                console.log(blob);
-                //console.log(position);
-            });
-        } else {
-            console.log('geolocation not available')
         }
-    });
+
+        document.querySelector("#btn").addEventListener("click", event => {
+
+            if ('geolocation' in navigator) {
+                console.log('geolocation available')
+
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    console.log('geolocation available 2')
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    const mood = document.getElementById('mood').value;
+                    document.getElementById('mood').value = "";
+                    document.getElementById('longitude').textContent = long;
+                    document.getElementById('latitude').textContent = lat;
+
+                    const data = { lat, long, mood ,image64};
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+
+                    }
+
+                    const response = await fetch('/api', options);
+                    const blob = await response.json();
+                    console.log(blob);
+                    //console.log(position);
+                }, (err) => {
+                    console.log(err)
+                }, { timeout: 30000, enableHighAccuracy: true, maximumAge: 75000 });
+            } else {
+                console.log('geolocation not available')
+            }
+        });
 
     </script>
 

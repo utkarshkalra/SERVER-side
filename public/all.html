@@ -9,28 +9,40 @@
 
 <body>
     <h1>Data Selfie App</h1>
+    <a href="/">Enter</a>
+    <span>&nbsp;|&nbsp;</span>
+    <a href="all.html">list</a>
+    <br><br>
     <script>
         getData();
-         async function getData() {
+        async function getData() {
             const res = await fetch('http://localhost:3000/api');
             const data = await res.json();
 
-            for(item of data){
-                const root=document.createElement('div');
-                const mood=document.createElement('div');
-                const br=document.createElement('br');
+            for (item of data) {
+                const root = document.createElement('div');
+                const mood = document.createElement('div');
+                const br = document.createElement('br');
+                const image = document.createElement('img');
 
-                if(item.mood){
-                mood.textContent = `mood: ${item.mood}`}
-                const date=document.createElement('div');
-                const dateString=new Date(item.timestamp).toLocaleString();
+                if (item.mood) {
+                    mood.textContent = `mood: ${item.mood}`
+                }
+                const date = document.createElement('div');
+                const dateString = new Date(item.timestamp).toLocaleString();
                 date.textContent = `date: ${dateString}`
+                // image.src=item.image64;
+
+                if(item.image64){
+                    image.src=item.image64;
+                    console.log(item.image64);
+                }
 
 
-                const geo=document.createElement('div');
+                const geo = document.createElement('div');
                 geo.textContent = `lat: ${item.lat}deg , long: ${item.long}deg `
 
-                root.append(mood,geo,date);
+                root.append(mood, geo, date ,image);
                 root.append(br);
                 document.body.append(root);
             }
