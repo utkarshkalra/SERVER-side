@@ -1,7 +1,10 @@
 const express=require('express');
+const cors = require('cors');
 const app=express();
 const Datastore=require('nedb');
 
+
+app.use(cors());
 
 app.use(express.static('public'));
 app.use(express.json({limit: '1mb' }));
@@ -19,12 +22,17 @@ app.post('/api',(req,res) => {
     data.timestamp=timestamp;
     database.insert(data);
  
-    res.json({
-        status:"Successfull",
-        timestamp:timestamp,
-        latitude:data.lat,
-        longitude:data.long
-    });
+    res.json(data);
 });
 
-app.listen(3000,()=>console.log('connected'))
+app.get('/api',(req,res)=>{
+    database.find({},(err , data)=>{
+        if(err){
+            res.end();
+            return;
+        }
+        res.json(data);
+    })
+})
+
+app.listen(3000,()=>console.log('connected at port:3000'))

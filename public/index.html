@@ -8,8 +8,16 @@
 </head>
 
 <body>
+    <h1>Data Selfie</h1>
+    <p>Latitude: <span id="latitude"></span>&deg;</p>
+    <p>Longitude: <span id="longitude"></span>&deg;</p>
+    <input type="text" id="mood" placeholder="enter your mood" value="">
+    <button id="btn">Submit</button>
 
     <script>
+        
+        document.getElementById('btn').addEventListener("click",event =>{
+
         if ('geolocation' in navigator) {
             console.log('geolocation available')
 
@@ -17,11 +25,12 @@
 
                 const lat = position.coords.latitude;
                 const long = position.coords.longitude;
-
+                const mood=document.getElementById('mood').value;
+                document.getElementById('mood').value="";
                 document.getElementById('longitude').textContent = long;
                 document.getElementById('latitude').textContent = lat;
 
-                const data = {lat, long};
+                const data = {lat, long ,mood};
                 const options={
                     method:'POST',
                     headers:{
@@ -39,13 +48,9 @@
         } else {
             console.log('geolocation not available')
         }
+    });
 
     </script>
-
-    <h1>Data Selfie</h1>
-    <p>Latitude: <span id="latitude"></span>&deg;</p>
-    <p>Longitude: <span id="longitude"></span>&deg;</p>
-    <button class="btn" onclick="runserver">Submit</button>
 
 </body>
 
